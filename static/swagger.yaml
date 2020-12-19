@@ -1,0 +1,63 @@
+openapi: 3.0.1
+info:
+  title: Image Classification Service
+  description: This is a simple `image classification microservice` deployable in Kubernetes.
+  contact:
+    email: bogdan.kandra@gmail.com
+  license:
+    name: Licensed under Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "0.1"
+servers:
+- url: http://localhost:8060
+tags:
+- name: Classification
+  description: Operations related to image classification
+paths:
+  /classifyImage:
+    post:
+      tags:
+      - Classification
+      summary: Classifies an image using the VGG16 pre-trained model
+      operationId: classifyImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  description: Image file to be classified
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Image classified successfully
+          content:
+            application/json:
+              example:
+                predictions:
+                - label: daisy
+                  likelihood: 0.9879999756813049
+                - label: picket_fence
+                  likelihood: 0.004000000189989805
+                - label: pot
+                  likelihood: 0.0010000000474974513
+                - label: bee
+                  likelihood: 0.0010000000474974513
+                - label: cup
+                  likelihood: 0.0
+                - label: handkerchief
+                  likelihood: 0.0
+                - label: vase
+                  likelihood: 0.0
+                - label: binder
+                  likelihood: 0.0
+                - label: pillow
+                  likelihood: 0.0
+                - label: apron
+                  likelihood: 0.0
+        400:
+          description: Invalid file type supplied
+          content: {}

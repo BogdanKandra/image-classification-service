@@ -1,5 +1,6 @@
 import io
-from flask import abort, Flask, jsonify, render_template, request
+from flask import abort, Flask, jsonify, render_template, request, send_from_directory
+from flask_swagger_ui import get_swaggerui_blueprint
 import numpy as np
 from PIL import Image
 from tensorflow.keras.applications import vgg16
@@ -14,9 +15,27 @@ MODEL_PATH = 'model.h5'
 APP = Flask(__name__)
 MODEL = load_model(MODEL_PATH)
 
+# Swagger blueprint registration
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.yaml'
+
+swagger_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config = {
+        'app_name': 'Image Classification Service'
+    }
+)
+
+APP.register_blueprint(swagger_blueprint)
+
 # Binding routes
-@APP.route('/classification_api', methods=['POST'])
-def predict():
+@APP.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
+@APP.route('/classifyImage', methods=['POST'])
+def classify():
     # Get the image stream from the request
     image_stream = request.files['image'].read()
 
@@ -49,4 +68,4 @@ if __name__ == '__main__':
     APP.run(host='localhost', port=8060, debug=True)
 
 
-# curl -F image=@daisy.jpg http://localhost:8060/classification_api
+# curl -F image=@daisy.jpg http://localhost:8060/classifyImage
