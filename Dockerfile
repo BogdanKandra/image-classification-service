@@ -11,4 +11,5 @@ COPY requirements.txt model.h[5] ./
 RUN pip install -r requirements.txt
 RUN python ./src/create_model.py
 
-CMD python ./src/app.py
+# CMD python ./src/app.py
+CMD ["gunicorn", "-b", "0.0.0.0:8060", "src.app:APP"]
