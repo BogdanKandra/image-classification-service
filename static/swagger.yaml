@@ -60,4 +60,8 @@ paths:
                   likelihood: 0.0
         400:
           description: Invalid file type supplied
-          content: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Invalid file type supplied
