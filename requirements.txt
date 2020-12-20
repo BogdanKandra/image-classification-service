@@ -1,4 +1,5 @@
 Flask == 1.1.2
 flask_swagger_ui
+gunicorn
 Pillow
 tensorflow == 2.3.1
