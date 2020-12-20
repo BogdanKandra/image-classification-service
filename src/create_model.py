@@ -16,3 +16,5 @@ if __name__ == '__main__':
     if not os.path.exists(MODEL_PATH):
         model = create_model()
         model.save('model.h5')
+    else:
+        print('>>> Model already exists!')
