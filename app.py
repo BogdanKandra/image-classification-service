@@ -1,5 +1,5 @@
 import io
-from flask import abort, Flask, jsonify, render_template, request, send_from_directory
+from flask import abort, Flask, jsonify, render_template, request, Response, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 import numpy as np
 from PIL import Image
@@ -36,11 +36,16 @@ def send_static(path):
 
 @APP.route('/classifyImage', methods=['POST'])
 def classify():
-    # Get the image stream from the request
-    image_stream = request.files['image'].read()
+    # Get the file stream from the request
+    file_stream = request.files['image'].read()
+
+    # Check whether the file stream represents an image
+    try:
+        image = Image.open(io.BytesIO(file_stream))
+    except:
+        return Response('Invalid file type supplied', status=400)
 
     # Process the image to be compatible as input for VGG
-    image = Image.open(io.BytesIO(image_stream))
     if image.mode != 'RGB':
         image = image.convert('RGB')
     image = image.resize((224, 224))
