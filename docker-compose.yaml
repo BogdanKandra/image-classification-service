@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  classification:
+    build:
+      context: .
+    container_name: image-classification
+    ports:
+      - "8060:8060"
