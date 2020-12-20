@@ -1,4 +1,5 @@
 import io
+import os
 from flask import abort, Flask, jsonify, render_template, request, Response, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 import numpy as np
@@ -9,7 +10,10 @@ from tensorflow.keras.preprocessing import image as preproc_image
 
 
 # Paths management
-MODEL_PATH = 'model.h5'
+if os.path.basename(os.getcwd()) == 'src':
+    MODEL_PATH = os.path.join(os.path.dirname(os.getcwd()), 'model.h5')
+else:
+    MODEL_PATH = 'model.h5'
 
 # Application and model instantiation
 APP = Flask(__name__)
@@ -70,7 +74,4 @@ def classify():
 
 # Run the application
 if __name__ == '__main__':
-    APP.run(host='localhost', port=8060, debug=True)
-
-
-# curl -F image=@daisy.jpg http://localhost:8060/classifyImage
+    APP.run(host='0.0.0.0', port=8060, debug=True, use_reloader=False)
