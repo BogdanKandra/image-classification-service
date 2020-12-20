@@ -11,8 +11,4 @@ RUN pip install -r requirements.txt
 COPY src/ ./src/
 COPY static/ ./static/
 
-RUN ls ./
-RUN ls ./src
-RUN ls ./static
-
 CMD python ./src/app.py
