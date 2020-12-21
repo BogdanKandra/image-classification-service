@@ -1,5 +1,6 @@
 import io
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from flask import abort, Flask, jsonify, render_template, request, Response, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 import numpy as np
