@@ -16,12 +16,17 @@ project_directory_path = os.getcwd()
 while os.path.basename(project_directory_path) not in ['app', 'image-classification-service']:
     project_directory_path = os.path.dirname(project_directory_path)
 
-# Application and model instantiation
+# Application and model instantiation and setting constants
 STATIC_DIR_PATH = os.path.join(project_directory_path, 'static')
 APP = Flask(__name__, static_folder=STATIC_DIR_PATH)
-APP.logger.setLevel(logging.DEBUG)
 MODEL_PATH = os.path.join(project_directory_path, 'model.h5')
 MODEL = load_model(MODEL_PATH)
+
+# Set the logger level
+log_level = os.environ['LOG_LEVEL']
+if log_level not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+    log_level = 'DEBUG'
+APP.logger.setLevel(log_level)
 
 # Swagger blueprint registration
 API_URL = '/swagger'
@@ -40,6 +45,9 @@ APP.register_blueprint(swagger_blueprint)
 # Binding routes
 @APP.route('/static/<path:path>')
 def send_static(path):
+    if not os.path.exists(os.path.join(STATIC_DIR_PATH, path)):
+        APP.logger.error('[/static/{}] >>> {} file does not exist.'.format(path, path))
+
     return send_from_directory(APP.static_folder, path)
 
 @APP.route('/classifyImage', methods=['POST'])
@@ -51,7 +59,9 @@ def classify():
     try:
         image = Image.open(io.BytesIO(file_stream))
     except:
-        return Response('Invalid file type supplied', status=400)
+        APP.logger.error('[/classifyImage] >>> Invalid file type encountered. Returning 400 error code...')
+
+        return Response('Invalid file type supplied. Upload an image', status=400)
 
     # Process the image to be compatible as input for VGG
     if image.mode != 'RGB':
