@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from flask import abort, Flask, jsonify, render_template, request, Response, send_from_directory
@@ -16,7 +17,9 @@ while os.path.basename(project_directory_path) not in ['app', 'image-classificat
     project_directory_path = os.path.dirname(project_directory_path)
 
 # Application and model instantiation
-APP = Flask(__name__)
+STATIC_DIR_PATH = os.path.join(project_directory_path, 'static')
+APP = Flask(__name__, static_folder=STATIC_DIR_PATH)
+APP.logger.setLevel(logging.DEBUG)
 MODEL_PATH = os.path.join(project_directory_path, 'model.h5')
 MODEL = load_model(MODEL_PATH)
 
@@ -37,7 +40,7 @@ APP.register_blueprint(swagger_blueprint)
 # Binding routes
 @APP.route('/static/<path:path>')
 def send_static(path):
-    return send_from_directory('static', path)
+    return send_from_directory(APP.static_folder, path)
 
 @APP.route('/classifyImage', methods=['POST'])
 def classify():
