@@ -3,6 +3,8 @@ services:
   classification:
     build:
       context: .
+      args:
+        - LOG_LEVEL=${LOG_LEVEL}
     container_name: image-classification
     ports:
       - "8060:8060"

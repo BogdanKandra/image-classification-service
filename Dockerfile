@@ -4,6 +4,9 @@ RUN mkdir -p /app/src
 RUN mkdir -p /app/static
 WORKDIR /app
 
+ARG LOG_LEVEL=DEBUG
+ENV LOG_LEVEL=${LOG_LEVEL}
+
 COPY src/ ./src/
 COPY static/ ./static/
 COPY requirements.txt model.h[5] ./
