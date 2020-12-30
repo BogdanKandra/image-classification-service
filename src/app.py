@@ -10,23 +10,23 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image as preproc_image
 
 
-# Paths management
-if os.path.basename(os.getcwd()) == 'src':
-    MODEL_PATH = os.path.join(os.path.dirname(os.getcwd()), 'model.h5')
-else:
-    MODEL_PATH = 'model.h5'
+# Setting the project directory path, for easy access to resources
+project_directory_path = os.getcwd()
+while os.path.basename(project_directory_path) not in ['app', 'image-classification-service']:
+    project_directory_path = os.path.dirname(project_directory_path)
 
 # Application and model instantiation
 APP = Flask(__name__)
+MODEL_PATH = os.path.join(project_directory_path, 'model.h5')
 MODEL = load_model(MODEL_PATH)
 
 # Swagger blueprint registration
-SWAGGER_URL = '/swagger'
-API_URL = '/static/swagger.yaml'
+API_URL = '/swagger'
+SWAGGER_CONFIG_URL = '/static/swagger.yaml'
 
 swagger_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,
     API_URL,
+    SWAGGER_CONFIG_URL,
     config = {
         'app_name': 'Image Classification Service'
     }
