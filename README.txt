@@ -6,7 +6,10 @@ Regarding the model file:
 	script to download (which was not the case in the present task)
 
 Starting the application:
--> docker-compose build classification
+-> docker-compose build [--build-arg LOG_LEVEL=VALUE] classification
+	-> `LOG_LEVEL` must have one of the following values: 'DEBUG', 'INFO', 'WARNING', 'ERROR' or 'CRITICAL'
+	-> If the build-arg option is not specified or the value provided for `LOG_LEVEL`
+		is not one of those described, the default level of 'DEBUG' will be used
 -> docker-compose up classification
     The web application is now running on http://localhost:8060
 
